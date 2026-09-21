@@ -45,3 +45,7 @@ npx hardhat run scripts/playRPS.ts   # play a sample game
 | `test/RPSGame.t.sol` | Foundry tests |
 | `script/RPSGame.s.sol` | Foundry deploy script |
 | `hardhat-base/` | The same contract with Hardhat tests, a play script, and an Ignition deploy module |
+
+## License
+
+Released under the [MIT License](LICENSE).
