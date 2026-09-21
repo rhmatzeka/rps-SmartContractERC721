@@ -1,66 +1,47 @@
-## Foundry
+# Rock-Paper-Scissors On-Chain (with a Victory NFT)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A rock-paper-scissors game that runs entirely in a smart contract on **Base Sepolia**. Two players play a round, the contract decides the winner, and the winner can mint a **Victory NFT** (ERC-721) as a trophy.
 
-Foundry consists of:
+Deployed on Base Sepolia at `0x15337b2E3ba123f46f533a209516A3833D1aF438`.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## How a game works
 
-## Documentation
+1. Player 1 calls `createGame()` and gets a game ID.
+2. Player 2 calls `joinGame(gameId)`.
+3. Each player calls `submitMove(gameId, move)` with Rock, Paper, or Scissors.
+4. After both moves are in, the contract picks the winner (or a draw).
+5. The winner calls `redeemVictoryNFT(gameId, tokenURI)` to mint their **RPS Victory NFT (RPSNFT)**.
 
-https://book.getfoundry.sh/
+Anyone can read a game with `getGame(gameId)`, and events (`GameCreated`, `GameJoined`, `MoveSubmitted`, `GameFinished`, `NFTRedeemed`) let apps follow along.
 
-## Usage
+> Note: moves are sent in plain form, so the second player could see the first player's move on-chain before playing. A commit-reveal scheme would fix this; it's a good next step.
 
-### Build
+## Getting started
 
-```shell
-$ forge build
+The contract is set up twice, so you can use either tool.
+
+**Foundry** (repo root):
+
+```bash
+forge install
+forge build
+forge test
 ```
 
-### Test
+**Hardhat** (`hardhat-base/`):
 
-```shell
-$ forge test
+```bash
+cd hardhat-base
+npm install
+npx hardhat test
+npx hardhat run scripts/playRPS.ts   # play a sample game
 ```
 
-### Format
+## Project structure
 
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+| Path | What it is |
+| --- | --- |
+| `src/RPSGame.sol` | The game contract (Foundry) |
+| `test/RPSGame.t.sol` | Foundry tests |
+| `script/RPSGame.s.sol` | Foundry deploy script |
+| `hardhat-base/` | The same contract with Hardhat tests, a play script, and an Ignition deploy module |
